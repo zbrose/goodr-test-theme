@@ -1,0 +1,194 @@
+/* 1. Block: Root Element */
+.goodr-modal {
+  --modal-navy: #0c2340;
+  --modal-pink: #e06287;
+  --modal-yellow: #ede939;
+  --goodr-shadow: -4px 4px var(--modal-navy);
+  --goodr-font: canada-type-gibson, sans-serif;
+  visibility: hidden;
+}
+
+/* Modifiers (States) */
+.goodr-modal.is-active,
+.goodr-modal--test-mode {
+  visibility: visible !important;
+}
+
+/* 2. Elements: Overlay & Content */
+.goodr-modal__overlay {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  pointer-events: none;
+}
+
+.goodr-modal.is-active .goodr-modal__overlay,
+.goodr-modal--test-mode .goodr-modal__overlay {
+  background: rgba(0, 0, 0, 0.6) !important;
+  pointer-events: auto !important;
+}
+
+.goodr-modal.is-closing .goodr-modal__overlay {
+  background: rgba(0, 0, 0, 0);
+}
+
+.goodr-modal__content {
+  font-family: var(--goodr-font);
+  position: relative;
+  background: #ffffff;
+  border: 3px solid var(--modal-navy);
+  border-radius: 8px;
+  text-align: center;
+  width: 100%;
+  max-width: 484px;
+  max-height: 90vh;
+  padding: 52px 48px;
+  box-shadow: var(--goodr-shadow);
+  box-sizing: border-box;
+  opacity: 0;
+  transform: scale(0.7) translateY(-20px);
+  transition:
+    opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.goodr-modal.is-active .goodr-modal__content,
+.goodr-modal--test-mode .goodr-modal__content {
+  opacity: 1 !important;
+  transform: scale(1) translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+.goodr-modal.is-closing .goodr-modal__content {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
+}
+
+/* 3. Hero & Images */
+.goodr-modal__hero {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.goodr-modal__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  width: 200px;
+}
+
+.goodr-modal__img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.goodr-modal__img--mobile {
+  display: none;
+}
+.goodr-modal__img--desktop {
+  display: block;
+}
+
+/* 4. Text Styles */
+.goodr-modal__description {
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--modal-navy);
+  margin: 1rem 0 2rem 0;
+}
+
+.goodr-modal__discount {
+  color: var(--modal-pink);
+  font-weight: 700;
+}
+
+/* 5. Buttons & Close Icon */
+.goodr-modal__close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.goodr-modal__btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.goodr-modal__confirm-btn {
+  display: block;
+  padding: 12px 0;
+  background-color: var(--modal-yellow);
+  border: 2px solid var(--modal-navy);
+  border-radius: 25px;
+  box-shadow: var(--goodr-shadow);
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  text-shadow: -2.75px 2.75px var(--modal-navy);
+  -webkit-text-stroke: 1px var(--modal-navy);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.goodr-modal__confirm-btn:hover {
+  box-shadow: 0 0 0 var(--modal-navy);
+}
+
+.goodr-modal__dismiss-btn {
+  color: var(--modal-navy);
+  background: transparent;
+  border: none;
+  text-decoration: underline;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 6. Mobile Overrides */
+@media screen and (max-width: 600px) {
+  .goodr-modal__img--mobile {
+    display: block;
+  }
+  .goodr-modal__img--desktop {
+    display: none;
+  }
+
+  .goodr-modal__content {
+    padding: 35px 37px;
+    max-width: 326px;
+    --goodr-shadow: -2.75px 2.75px var(--modal-navy);
+  }
+
+  .goodr-modal__close-btn {
+    width: 16px;
+    height: 16px;
+  }
+
+  .goodr-modal__description,
+  .goodr-modal__discount {
+    font-size: 18px;
+  }
+}
