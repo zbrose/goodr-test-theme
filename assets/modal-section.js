@@ -1,7 +1,6 @@
 class GoodrPopup {
   constructor(container) {
     this.container = container;
-    // Updated Selectors to match BEM naming
     this.overlay = container.querySelector(".goodr-modal__overlay");
     this.closeBtn = container.querySelector(".goodr-modal__close-btn");
     this.dismissBtn = container.querySelector(".goodr-modal__dismiss-btn");
@@ -19,28 +18,12 @@ class GoodrPopup {
     );
     const isEditor = window.Shopify && window.Shopify.designMode;
 
-    // 1. If in the editor, show it immediately for a better experience
-    if (isEditor || isTestMode) {
-      this.show();
-      return;
-    }
-
-    // 2. Normal customer logic (Delay + Session check)
-    if (sessionStorage.getItem(this.storageKey)) return;
-
-    setTimeout(() => {
-      this.show();
-    }, this.delay);
-
+    // ATTACH EVENTS FIRST (Always run this)
     this.closeBtn.addEventListener("click", () => this.close());
-
-    if (this.dismissBtn) {
+    if (this.dismissBtn)
       this.dismissBtn.addEventListener("click", () => this.close());
-    }
-
-    if (this.confirmBtn) {
+    if (this.confirmBtn)
       this.confirmBtn.addEventListener("click", (e) => this.handleConfirm(e));
-    }
 
     document.addEventListener("keydown", (e) => {
       if (
@@ -50,6 +33,18 @@ class GoodrPopup {
         this.close();
       }
     });
+
+    // DETERMINE IF/WHEN TO SHOW
+    if (isEditor || isTestMode) {
+      this.show(); // Show immediately in editor
+    } else {
+      // Normal Customer Logic
+      if (sessionStorage.getItem(this.storageKey)) return;
+
+      setTimeout(() => {
+        this.show();
+      }, this.delay);
+    }
   }
 
   show() {
@@ -59,35 +54,35 @@ class GoodrPopup {
   }
 
   close() {
-    // Add closing animation class
     this.container.classList.add("is-closing");
-
-    // Wait for animation to complete before hiding
     setTimeout(() => {
       this.container.classList.remove("is-active", "is-closing");
       if (this.overlay) this.overlay.setAttribute("aria-hidden", "true");
       document.body.style.overflow = "";
-      sessionStorage.setItem(this.storageKey, "true");
-    }, 400); // Matches CSS transition duration
+      // Only set session storage if NOT in editor
+      if (!(window.Shopify && window.Shopify.designMode)) {
+        sessionStorage.setItem(this.storageKey, "true");
+      }
+    }, 400);
   }
 
   handleConfirm(e) {
-    e.preventDefault();
     const shopUrl = this.confirmBtn.getAttribute("href") || "/collections/all";
-    sessionStorage.setItem(this.storageKey, "true");
+    if (!(window.Shopify && window.Shopify.designMode)) {
+      sessionStorage.setItem(this.storageKey, "true");
+    }
     window.location.href = shopUrl;
   }
 }
 
-// Initialize when DOM is ready
+// Global Init
 document.addEventListener("DOMContentLoaded", () => {
   const popup = document.querySelector(".goodr-modal");
   if (popup) new GoodrPopup(popup);
 });
 
-// Shopify Design Mode Support (Re-init when section is added/selected in customizer)
+// Theme Editor Support
 document.addEventListener("shopify:section:load", (event) => {
-  if (event.target.querySelector(".goodr-modal")) {
-    new GoodrPopup(event.target.querySelector(".goodr-modal"));
-  }
+  const popup = event.target.querySelector(".goodr-modal");
+  if (popup) new GoodrPopup(popup);
 });

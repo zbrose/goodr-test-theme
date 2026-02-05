@@ -5,12 +5,13 @@
   --modal-yellow: #ede939;
   --goodr-shadow: -4px 4px var(--modal-navy);
   --goodr-font: canada-type-gibson, sans-serif;
-  visibility: hidden;
+  display: none;
 }
 
 /* Modifiers (States) */
 .goodr-modal.is-active,
 .goodr-modal--test-mode {
+  display: block !important;
   visibility: visible !important;
 }
 
