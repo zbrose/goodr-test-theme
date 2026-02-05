@@ -14,19 +14,23 @@ class GoodrPopup {
   }
 
   init() {
-    // If user has seen it or if Test Mode is active in the editor, handle differently
     const isTestMode = this.container.classList.contains(
       "goodr-modal--test-mode",
     );
+    const isEditor = window.Shopify && window.Shopify.designMode;
 
-    if (sessionStorage.getItem(this.storageKey) && !isTestMode) return;
-
-    // Only set delay and show if not in Test Mode
-    if (!isTestMode) {
-      setTimeout(() => {
-        this.show();
-      }, this.delay);
+    // 1. If in the editor, show it immediately for a better experience
+    if (isEditor || isTestMode) {
+      this.show();
+      return;
     }
+
+    // 2. Normal customer logic (Delay + Session check)
+    if (sessionStorage.getItem(this.storageKey)) return;
+
+    setTimeout(() => {
+      this.show();
+    }, this.delay);
 
     this.closeBtn.addEventListener("click", () => this.close());
 
