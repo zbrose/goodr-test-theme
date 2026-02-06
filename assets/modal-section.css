@@ -110,8 +110,8 @@
 /* 5. Buttons & Close Icon */
 .close-modal-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 10px;
+  right: 10px;
   background: none;
   border: none;
   cursor: pointer;
