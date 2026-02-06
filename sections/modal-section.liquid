@@ -1,66 +1,75 @@
 {{ 'modal-section.css' | asset_url | stylesheet_tag }}
 
-<div class="goodr-modal {% if section.settings.test_mode %}goodr-modal--test-mode{% endif %}" 
+  <div class="custom-modal-section {% if section.settings.test_mode %}test-mode-active{% endif %}" 
      data-section-id="{{ section.id }}" 
      data-delay="{{ section.settings.delay_time }}">
-  <div class="goodr-modal__overlay" aria-hidden="true">
-    <div class="goodr-modal__content" role="dialog" aria-modal="true">
+    <div class="modal-overlay" aria-hidden="true">
+      <div class="modal-content" role="dialog" aria-modal="true">
 
-      <button class="goodr-modal__close-btn" aria-label="Close modal">
-        <img src="{{ 'x.svg' | asset_url }}" class="goodr-modal__close-icon" alt="" loading="eager" width="20" height="20">
-      </button>
-
-      <div class="goodr-modal__hero">
-        {%- liquid
-          assign logo_alt = section.settings.modal_logo.alt | default: section.settings.modal_logo_alt
-          assign main_alt = section.settings.modal_image.alt | default: section.settings.modal_image_alt
-        -%}
-
-        {% comment %} Logo {% endcomment %}
-        {% if section.settings.modal_logo %}
-          {{ section.settings.modal_logo | image_url: width: 500 | image_tag: class: 'goodr-modal__logo', alt: logo_alt, loading: 'eager' }}
-        {% else %}
-          <img src="{{ 'goodr_logo_white.svg' | asset_url }}" class="goodr-modal__logo" alt="Logo" loading="eager" width="200" height="auto">
-        {% endif %}
-
-        {% comment %} Desktop Background {% endcomment %}
-        {% if section.settings.modal_image %}
-          {{ section.settings.modal_image | image_url: width: 1000 | image_tag: class: 'goodr-modal__img goodr-modal__img--desktop', alt: main_alt, loading: 'eager', widths: '484, 748, 1000' }}
-        {% else %}
-          <img src="{{ 'desktop_popup_img.png' | asset_url }}" class="goodr-modal__img goodr-modal__img--desktop" alt="Desktop Background" loading="eager" width="100%" height="auto">
-        {% endif %}
-        
-        {% comment %} Mobile Background {% endcomment %}
-        {% if section.settings.modal_image_mobile %}
-          {{ section.settings.modal_image_mobile | image_url: width: 600 | image_tag: class: 'goodr-modal__img goodr-modal__img--mobile', alt: main_alt, loading: 'eager', widths: '326, 600' }}
-        {% elsif section.settings.modal_image %}
-          {{ section.settings.modal_image | image_url: width: 600 | image_tag: class: 'goodr-modal__img goodr-modal__img--mobile', alt: main_alt, loading: 'eager' }}
-        {% else %}
-          <img src="{{ 'mobile_popup_img.png' | asset_url }}" class="goodr-modal__img goodr-modal__img--mobile" alt="Mobile Background" loading="eager" width="326" height="auto">
-        {% endif %}
-      </div>
-
-      {%- liquid
-        assign discount_span = '<span class="goodr-modal__discount">' | append: section.settings.discount_code | append: '</span>'
-        assign description_text = section.settings.modal_description | default: "USE CODE [code] FOR $5 OFF YOUR FIRST ORDER"
-        assign formatted_description = description_text | replace: '[code]', discount_span
-      -%}
-
-      {% if formatted_description != blank %}
-        <p class="goodr-modal__description">{{ formatted_description }}</p>
-      {% endif %}
-
-      <div class="goodr-modal__btn-group">
-        <a class="goodr-modal__confirm-btn" href="{{ section.settings.confirm_button_link }}">
-          {{ section.settings.confirm_button_text | default: 'SHOP NOW' }}
-        </a>
-        <button class="goodr-modal__dismiss-btn" type="button">
-          {{ section.settings.dismiss_button_text | default: 'No Thanks' }}
+        <button class="close-modal-btn" aria-label="Close modal">
+          {% comment %} Using eager loading for icons too {% endcomment %}
+          <img src="{{ 'x.svg' | asset_url }}" class="close-icon" alt="" loading="eager" width="20" height="20">
         </button>
+
+        <div class="modal-hero">
+          {% comment %} Logo: Pull alt from image object if text field is empty {% endcomment %}
+          {%- liquid
+            assign logo_alt = section.settings.modal_logo.alt | default: section.settings.modal_logo_alt
+            assign main_alt = section.settings.modal_image.alt | default: section.settings.modal_image_alt
+          -%}
+
+          {% if section.settings.modal_logo %}
+            {{ section.settings.modal_logo | image_url: width: 500 | image_tag: class: 'modal-logo', alt: logo_alt, loading: 'eager' }}
+          {% else %}
+            <img src="{{ 'goodr_logo_white.svg' | asset_url }}" class="modal-logo" alt="Logo" loading="eager" width="200" height="auto">
+          {% endif %}
+
+          {% comment %} Desktop Background {% endcomment %}
+          {% if section.settings.modal_image %}
+            {{ section.settings.modal_image | image_url: width: 1000 | image_tag: class: 'modal-img display-desktop', alt: main_alt, loading: 'eager', widths: '484, 748, 1000' }}
+          {% else %}
+            <img src="{{ 'desktop_popup_img.png' | asset_url }}" class="modal-img display-desktop" alt="Desktop Background" loading="eager" width="100%" height="auto">
+          {% endif %}
+          
+          {% comment %} Mobile Background {% endcomment %}
+          {% if section.settings.modal_image_mobile %}
+            {{ section.settings.modal_image_mobile | image_url: width: 600 | image_tag: class: 'modal-img display-mobile', alt: main_alt, loading: 'eager', widths: '326, 600' }}
+          {% elsif section.settings.modal_image %}
+            {{ section.settings.modal_image | image_url: width: 600 | image_tag: class: 'modal-img display-mobile', alt: main_alt, loading: 'eager' }}
+					{% else %}
+						<img 
+							src="{{ 'mobile_popup_img.png' | asset_url }}" 
+							class="modal-img display-mobile" 
+							alt="Mobile Background" 
+							loading="eager" 
+							width="326" 
+							height="auto"
+						>
+          {% endif %}
+        </div>
+
+        	{% comment %} Only show text if description or discount code exists {% endcomment %}
+					{%- liquid
+						assign discount_span = '<span class="discount-code">' | append: section.settings.discount_code | append: '</span>'
+						assign description_text = section.settings.modal_description | default: "USE CODE [code] FOR $5 OFF YOUR FIRST ORDER"
+						assign formatted_description = description_text | replace: '[code]', discount_span
+					-%}
+
+					{% if formatted_description != blank %}
+						<p class="modal-description">{{ formatted_description }}</p>
+					{% endif %}
+
+        <div class="modal-btn-group">
+          <a class="confirm-modal-btn" href="{{ section.settings.confirm_button_link }}">
+            {{ section.settings.confirm_button_text | default: 'SHOP NOW' }}
+          </a>
+          <button class="decline-modal-btn" type="button">
+            {{ section.settings.decline_button_text | default: 'No Thanks' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
 <script src="{{ 'modal-section.js' | asset_url }}" defer></script>
 
@@ -69,37 +78,38 @@
   "name": "Modal Popup",
   "settings": [
     {
-      "type": "checkbox",
-      "id": "test_mode",
-      "label": "Force Open (Test Mode)",
-      "default": false
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Open Modal"
     },
     {
       "type": "image_picker",
       "id": "modal_logo",
       "label": "Modal Logo"
     },
-    {
-      "type": "image_picker",
-      "id": "modal_image",
-      "label": "Modal Image"
-    },
-    {
-      "type": "image_picker",
-      "id": "modal_image_mobile",
-      "label": "Mobile Image (Optional)"
-    },
-    {
-      "type": "text",
-      "id": "discount_code",
-      "default": "GOODR5",
-      "label": "Discount Code"
-    },
+		{
+			"type": "image_picker",
+			"id": "modal_image_mobile",
+			"label": "Mobile Image (Optional)"
+		},
+		{
+			"type": "text",
+			"id": "modal_logo_alt",
+			"label": "Modal Logo Alt Text",
+			"default": "Modal Logo"
+		}, 
+		{
+			"type": "text",
+			"id": "modal_image_alt",
+			"label": "Modal Image Alt Text",
+			"default": "Modal Image"
+		}, 
     {
       "type": "text",
       "id": "modal_description",
       "label": "Modal Description",
-      "default": "USE CODE [code] FOR $5 OFF YOUR FIRST ORDER"
+			"default": "USE CODE [code] FOR $5 OFF YOUR FIRST ORDER"
     },
     {
       "type": "text",
@@ -108,16 +118,21 @@
       "default": "SHOP ALL STYLES"
     },
     {
+      "type": "text",
+      "id": "decline_button_text",
+      "label": "Decline Button Text",
+      "default": "NAH, I HATE DEALS"
+    },
+    {
       "type": "url",
       "id": "confirm_button_link",
       "label": "Confirm Button Link",
-      "default": "/collections/all"
+			"default": "/collections/all"
     },
     {
-      "type": "text",
-      "id": "dismiss_button_text",
-      "label": "Dismiss Button Text",
-      "default": "NAH, I HATE DEALS"
+      "type": "image_picker",
+      "id": "modal_image",
+      "label": "Modal Image"
     },
     {
       "type": "range",
@@ -128,7 +143,20 @@
       "unit": "sec",
       "label": "Delay before showing",
       "default": 2
-    }
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+			"default": "GOODR5",
+			"label": "Discount Code"
+    },
+		{
+			"type": "checkbox",
+			"id": "test_mode",
+			"label": "Force Open (Test Mode)",
+			"default": false,
+			"info": "Check this to keep the modal open while you style it in the editor."
+		}
   ],
   "presets": [
     {
