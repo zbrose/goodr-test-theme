@@ -1,0 +1,1 @@
+/Users/zachbrose/Desktop/shopify-projects/goodr-modal-test-env/testotheme/AGENTS.md
